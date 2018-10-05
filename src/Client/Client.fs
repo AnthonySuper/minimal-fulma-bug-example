@@ -84,29 +84,36 @@ let button txt onClick =
           Button.Color IsPrimary
           Button.OnClick onClick ]
         [ str txt ]
-let nav =  
-     Navbar.navbar [ ]
-        [ Navbar.Item.a [ ]
-                [   str "Home"
-                     ] ]             
-            // Navbar.Item.a [ ]
-            //     [ str "About Us" ]
-            // Navbar.Item.a [ ]
-            //     [ str "Elements" ]
-        //   Navbar.End.div [ ]
-        //     [ Navbar.Item.div [ ]
-        //         [ Button.button [ Button.Color IsSuccess ]
-        //             [ str "Demo" ] ] ] 
 
+type LinkText = {Text: string; Link: string}
+
+let summitLinks =
+    [ {Text = "Home"; Link = "#"}
+      {Text = "About Us"; Link = "#AboutUs"}
+      {Text = "Contact"; Link = "#Contact"}  ]
+
+let navItems links = 
+    links
+    |> List.map (fun l -> 
+        Navbar.Item.a [ Navbar.Item.Props [Href l.Link]] [str l.Text] )
+        
+let nav =  
+     Navbar.navbar [] (navItems summitLinks)          
+
+let contain inside =
+    Container.container []
+         [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Right) ] ]
+                inside ]
+             
 let view (model : Model) (dispatch : Msg -> unit) =
-    div []
-        [ nav
-          Container.container []
-              [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ Heading.h3 [] [ str ("Press buttons to manipulate counter: " + show model) ] ]
-                Columns.columns []
-                    [ Column.column [] [ button "-" (fun _ -> dispatch Decrement) ]
-                      Column.column [] [ button "+" (fun _ -> dispatch Increment) ] ] ]
+    div [ ]
+        [ nav 
+        //   Container.container []
+        //       [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+        //             [ Heading.h3 [] [ str ("Press buttons to manipulate counter: " + show model) ] ]
+        //         Columns.columns []
+        //             [ Column.column [] [ button "-" (fun _ -> dispatch Decrement) ]
+        //               Column.column [] [ button "+" (fun _ -> dispatch Increment) ] ] ]
 
           Footer.footer [ ]
                 [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
