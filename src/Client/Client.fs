@@ -97,14 +97,14 @@ let navItems links =
     |> List.map (fun l -> 
         Navbar.Item.a [ Navbar.Item.Props [Href l.Link]] [str l.Text] )
         
-let nav =  
-     Navbar.navbar [] (navItems summitLinks)          
+     
 
 let contain inside =
     Container.container []
          [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Right) ] ]
                 inside ]
-             
+let nav =  
+     Navbar.navbar [] ([contain (navItems summitLinks)])     
 let view (model : Model) (dispatch : Msg -> unit) =
     div [ ]
         [ nav 
