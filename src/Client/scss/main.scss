@@ -8,6 +8,9 @@
 $summitblue: #6A87D8;
 $summitblue-invert: findColorInvert($summitblue);
 $summitblack: rgba(0, 0, 0, 0.65);
+
+$primary: $summitblue;
+$primary-invert: $summitblue-invert;
 // $navy: #003057;
 // $navy-invert: #0193C1;
 
@@ -41,10 +44,10 @@ $summitblack: rgba(0, 0, 0, 0.65);
 
 .navbar-item{
     display: inline-block;
-    color: $summitblack
+    color: $summitblue
 }
 .navbar-item img {
-    max-height: 3rem;
+    max-height: 5rem;
 }
 
 // .hero {

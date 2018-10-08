@@ -89,7 +89,7 @@ let button txt onClick =
 
 let view (model : Model) (dispatch : Msg -> unit) =
     div [ ]
-        [ Summit.nav 
+        [ Summit.site 
         //   Container.container []
         //       [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
         //             [ Heading.h3 [] [ str ("Press buttons to manipulate counter: " + show model) ] ]
