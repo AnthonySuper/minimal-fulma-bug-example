@@ -1,5 +1,6 @@
 module Client
 
+open Summit
 open Elmish
 open Elmish.React
 
@@ -70,7 +71,7 @@ let safeComponents =
            ]
 
     p [ ]
-        [ strong [] [ str "SAFE Template" ]
+        [ strong [] [ str "Built using SAFE Stack" ]
           str " powered by: "
           components ]
 
@@ -85,29 +86,10 @@ let button txt onClick =
           Button.OnClick onClick ]
         [ str txt ]
 
-type LinkText = {Text: string; Link: string}
 
-let summitLinks =
-    [ {Text = "Home"; Link = "#"}
-      {Text = "About Us"; Link = "#AboutUs"}
-      {Text = "Contact"; Link = "#Contact"}  ]
-
-let navItems links = 
-    links
-    |> List.map (fun l -> 
-        Navbar.Item.a [ Navbar.Item.Props [Href l.Link]] [str l.Text] )
-        
-     
-
-let contain inside =
-    Container.container []
-         [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Right) ] ]
-                inside ]
-let nav =  
-     Navbar.navbar [] ([contain (navItems summitLinks)])     
 let view (model : Model) (dispatch : Msg -> unit) =
     div [ ]
-        [ nav 
+        [ Summit.nav 
         //   Container.container []
         //       [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
         //             [ Heading.h3 [] [ str ("Press buttons to manipulate counter: " + show model) ] ]
