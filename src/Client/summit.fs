@@ -16,19 +16,17 @@ type Pages =
 | About
 | Contact
 
-
 let navItems links = 
-        links
-        |> List.map (fun l -> 
-                Navbar.Item.a [ Navbar.Item.Props [Href l.Link]] [str l.Text] )       
+    links
+    |> List.map (fun l -> Navbar.Item.a [ Navbar.Item.Props [Href l.Link]] [str l.Text] )       
 let navBrand imgSrc =
    Navbar.Brand.div [ ]
             [ Navbar.Item.a [ Navbar.Item.Props [ Href "#" ] ]
-                [ img [ Style [ Width "10rem"]
+                [ img [ Style [ Width "15rem"]
                         Src imgSrc ] ] ]    
 let nav =  
     let links = 
-        [ Navbar.Item.div [ ]
+        [ Navbar.burger []
             (navItems LinkText.GetLinks)]
     Navbar.navbar [] 
         ((navBrand "./images/summit_logo.png")::links)
