@@ -15,6 +15,8 @@ type Pages =
 | Home
 | About
 | Contact
+
+
 let navItems links = 
     links
     |> List.map (fun l -> 
