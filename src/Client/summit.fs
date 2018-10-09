@@ -16,27 +16,38 @@ type Pages =
 | About
 | Contact
 let navItems links = 
-    links
-    |> List.map (fun l -> 
-        Fulma.Navbar.Item.a [ Navbar.Item.Props [Href l.Link]] [str l.Text] )       
+        links
+        |> List.map (fun l -> 
+                Navbar.Item.a [ Navbar.Item.Props [Href l.Link]] [str l.Text] )       
 let navBrand imgSrc =
    Navbar.Brand.div [ ]
             [ Navbar.Item.a [ Navbar.Item.Props [ Href "#" ] ]
-                [ img [ Style [ Width "4rem"]
+                [ img [ Style [ Width "10rem"]
                         Src imgSrc ] ] ]    
 let nav =  
-     Navbar.navbar [] ((navBrand "./images/summit_mtn.png")::(navItems LinkText.GetLinks))     
+    let links = 
+        [ Navbar.Item.div [ ]
+            (navItems LinkText.GetLinks)]
+    Navbar.navbar [] 
+        ((navBrand "./images/summit_logo.png")::links)
 
 let tabs links = 
     let eachTab =
         links
         |> List.mapi (fun i l -> 
             Tabs.tab [] [ a [Href l.Link] [str l.Text]] )
-    Tabs.tabs [Tabs.IsCentered] eachTab
+    Tabs.tabs [] eachTab
 
 let hero =
     Hero.hero[]
-        [Hero.head []
-            [tabs LinkText.GetLinks]]
+        [   Hero.head [] [nav]
+            Hero.body [] 
+                [ Container.container [ Container.IsFluid
+                                        Container.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+                        [ Heading.h1 [ ]
+                            [ str "Header" ]
+                          Heading.h2 [ Heading.IsSubtitle ]
+                            [ str "Subtitle" ] ] ] ] 
+            
 let site = 
-    (tabs LinkText.GetLinks)
+    (hero)
