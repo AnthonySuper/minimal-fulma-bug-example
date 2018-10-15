@@ -3,18 +3,21 @@ module Client
 open Summit
 open Elmish
 open Elmish.React
-open Route
+
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 open Fable.PowerPack.Fetch
-
+open Route
 open Shared
 
 open Fulma
 
 type PageModel =
-    | HomeModel of Routes.Home.Model 
+    | HomeModel of Routes.Home.Model
+    | ServicesModel of Routes.Services.Model
+    | AboutModel of Routes.About.Model
+    | ContactModel of Routes.Contact.Model 
 
 // The model holds data that you want to keep track of while the application is running
 // in this case, we are keeping track of a counter
@@ -28,7 +31,10 @@ type Model
 // the state of the application changes *only* in reaction to these events
 type Msg =
 | ChangeRoute of Route
-| HomeMsg of Routes.Home.Msg 
+| HomeMsg of Routes.Home.Msg
+| ServicesMsg of Routes.Services.Msg
+| AboutMsg of Routes.About.Msg
+| ContactMsg of Routes.Contact.Msg 
 
 // defines the initial state and initial command (= side-effect) of the application
 let init () : Model * Cmd<Msg> =
@@ -38,12 +44,20 @@ let init () : Model * Cmd<Msg> =
 
 let private routeData r =
     match r with
-    | Home -> 
+    | Services ->
+        let (m, c) = Routes.Services.init ()
+        ServicesModel m, Cmd.none
+    | About -> 
+        let (m, c) = Routes.About.init ()
+        AboutModel m, Cmd.none
+    | Contact ->
+        let (m, c) = Routes.Contact.init ()
+        ContactModel m, Cmd.none
+    | _ ->
+        // By default, go to the home page 
         let (m, c) = Routes.Home.init ()
         HomeModel m, Cmd.none
-    | _ -> 
-        let (m, c) = Routes.Home.init ()
-        HomeModel m, Cmd.none
+
     
 let private changeRoute r model =
     let (d, cmd) = routeData r 
@@ -62,8 +76,11 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
 
 let viewRoute model dispatch = 
     match model.PageModel with
-    | HomeModel m -> Routes.Home.view (dispatch << ChangeRoute) m (dispatch << HomeMsg)
-    | _ -> div [] []
+    | HomeModel m -> Routes.Home.view m (dispatch << HomeMsg)
+    | ServicesModel m -> Routes.Services.view m (dispatch << ServicesMsg)
+    | AboutModel m -> Routes.About.view m (dispatch << AboutMsg)
+    | ContactModel m -> Routes.Contact.view m (dispatch << ContactMsg)
+    | _ -> (fun _ -> div [] [])
 
 let safeComponents =
     let components =
@@ -82,20 +99,11 @@ let safeComponents =
         [ strong [] [ str "Built using SAFE Stack" ]
           str " powered by: "
           components ]
-
-
-let button txt onClick =
-    Button.button
-        [ Button.IsFullWidth
-          Button.Color IsPrimary
-          Button.OnClick onClick ]
-        [ str txt ]
-
-
 let view (model : Model) (dispatch : Msg -> unit) =
-    div [ ]
+    div [ ClassName "overall-container" ]
         [ navDisp (dispatch << ChangeRoute) model.Route;
-          viewRoute model dispatch
+          div [ ClassName "main-content"]
+             [ viewRoute model dispatch (dispatch << ChangeRoute) ]
           div [] [ showRoute model.Route |> str ]
         //   Container.container []
         //       [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
