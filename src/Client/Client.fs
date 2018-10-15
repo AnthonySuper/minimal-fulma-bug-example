@@ -13,22 +13,33 @@ open Shared
 
 open Fulma
 
+// Each page of this little app has its own data model.
+// We define this so we can keep track of the data of the page we're currently on.
+// Elmish requires us to maintain a single global state, so this has to be a definition
+// at the top-level. However, it's defined in terms of types defined in the modules, so
+// this isn't really that bad.
 type PageModel =
     | HomeModel of Routes.Home.Model
     | ServicesModel of Routes.Services.Model
     | AboutModel of Routes.About.Model
     | ContactModel of Routes.Contact.Model 
 
-// The model holds data that you want to keep track of while the application is running
-// in this case, we are keeping track of a counter
-// we mark it as optional, because initially it will not be available from the client
-// the initial value will be requested from server
-type Model 
-    = { Route: Route
-        PageModel: PageModel } 
+// Change from a PageModel over to a type that merely describes which route we're on
+// This allows us to properly display the route tabs as "active" when need be
+let getRoute r =
+    match r with
+    | HomeModel _ -> Home
+    | ServicesModel _ -> Services
+    | AboutModel _ -> About
+    | ContactModel _ -> Contact 
 
-// The Msg type defines what events/actions can occur while the application is running
-// the state of the application changes *only* in reaction to these events
+
+// Our model is very simple, and only consists of the model for each individual page
+type Model 
+    = { PageModel: PageModel } 
+
+// Our messages are also very simple. We can either change the route, or update the model
+// of the current page. Thus: 
 type Msg =
 | ChangeRoute of Route
 | HomeMsg of Routes.Home.Msg
@@ -36,12 +47,15 @@ type Msg =
 | AboutMsg of Routes.About.Msg
 | ContactMsg of Routes.Contact.Msg 
 
-// defines the initial state and initial command (= side-effect) of the application
+// The initial state and the initial effectful action.
+// In this case, we don't have any effectful action, and we start on the home page.
 let init () : Model * Cmd<Msg> =
     let home, homeCmd = Routes.Home.init ()
-    let initialModel = { Route = Home; PageModel = HomeModel home }
+    let initialModel = { PageModel = HomeModel home }
     initialModel, Cmd.none
 
+// How should we respond to a page-change request?
+// Quite easily: just re-load that page
 let private routeData r =
     match r with
     | Services ->
@@ -61,11 +75,16 @@ let private routeData r =
     
 let private changeRoute r model =
     let (d, cmd) = routeData r 
-    {model with Route = r; PageModel = d}, cmd 
+    {model with PageModel = d}, cmd 
 
-// The update function computes the next state of the application based on the current state and the incoming events/messages
-// It can also run side-effects (encoded as commands) like calling the server via Http.
-// these commands in turn, can dispatch messages to which the update function will react.
+// In this function we write a bunch of boilerplate!
+// More specifically, we map each message to its data type.
+// So we map home mesages to the HomeModel, ServicesMsgs to the ServicesModel, and so on.
+// So far this has been what I like the least about Elmish: this is quite a bit of code that is
+// essentially just copy/paste. Ah well, though!
+// Note that our design ensures that we can only recieve the proper type of message for
+// the current page, as other pages can't see or know about other messages. So,
+// the catch-all at the bottom just makes the compiler happy.
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     match (currentModel.PageModel, msg) with
     | (_, ChangeRoute r) -> changeRoute r currentModel 
@@ -83,6 +102,12 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         {currentModel with PageModel = (ContactModel d)}, Cmd.map ContactMsg c
     | _ -> currentModel, Cmd.none
 
+// Which page should we display?
+// In this case, it's quite simple.
+// If we have a HomeModel as our PageModel, display the home page.
+// If we have a ServicesModel as our PageModel, display the Services page.
+// You probably get the idea!
+// This is also very boiler-plate-ish but it's not too bad.
 let viewRoute model dispatch = 
     match model.PageModel with
     | HomeModel m -> Routes.Home.view m (dispatch << HomeMsg)
@@ -93,9 +118,13 @@ let viewRoute model dispatch =
 
 let view (model : Model) (dispatch : Msg -> unit) =
     div [ ClassName "overall-container" ]
-        [ navDisp (dispatch << ChangeRoute) model.Route;
+        [ navDisp (dispatch << ChangeRoute) (getRoute model.PageModel);
           div [ ClassName "main-content"]
              [ viewRoute model dispatch (dispatch << ChangeRoute) ]
+             // this dispatch << ChangeRoute bit here is a way to more easily
+             // change the page from within the body of a page.
+             // Essentially, it's a function that lets child pages dispatch
+             // `ChangeRoute` messages more easily.
         ]
 
 #if DEBUG
