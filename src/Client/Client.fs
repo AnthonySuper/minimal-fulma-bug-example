@@ -72,6 +72,15 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     | (HomeModel hm, HomeMsg m) ->
         let (d, c) = Routes.Home.update m hm
         {currentModel with PageModel = (HomeModel d)}, Cmd.none
+    | (ServicesModel sm, ServicesMsg m) ->
+        let (d, c) = Routes.Services.update m sm
+        {currentModel with PageModel = (ServicesModel d)}, Cmd.map ServicesMsg c
+    | (AboutModel am, AboutMsg m) ->
+        let (d, c) = Routes.About.update m am
+        {currentModel with PageModel = (AboutModel d)}, Cmd.map AboutMsg c 
+    | (ContactModel cm, ContactMsg m) ->
+        let (d, c) = Routes.Contact.update m cm
+        {currentModel with PageModel = (ContactModel d)}, Cmd.map ContactMsg c
     | _ -> currentModel, Cmd.none
 
 let viewRoute model dispatch = 

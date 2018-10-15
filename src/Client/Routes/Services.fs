@@ -9,7 +9,7 @@ module Routes.Services
     let init() : Model * Cmd<unit> =
         (), Cmd.none
 
-    let update msg model = model
+    let update msg model = model, Cmd.none
 
     let private title = bigTitleS "Services" "How we can help you"
 
