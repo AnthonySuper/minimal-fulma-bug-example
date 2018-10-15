@@ -3,6 +3,7 @@ module Client
 open Summit
 open Elmish
 open Elmish.React
+open Route
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
@@ -12,25 +13,25 @@ open Shared
 
 open Fulma
 
-
 // The model holds data that you want to keep track of while the application is running
 // in this case, we are keeping track of a counter
 // we mark it as optional, because initially it will not be available from the client
 // the initial value will be requested from server
-type Model = { Counter: Counter option }
+type Model 
+    = { Counter: Counter option
+        Route: Route }
 
 // The Msg type defines what events/actions can occur while the application is running
 // the state of the application changes *only* in reaction to these events
 type Msg =
 | Increment
 | Decrement
+| ChangeRoute of Route
 | InitialCountLoaded of Result<Counter, exn>
-
-
 
 // defines the initial state and initial command (= side-effect) of the application
 let init () : Model * Cmd<Msg> =
-    let initialModel = { Counter = None }
+    let initialModel = { Counter = None; Route = Home }
     let loadCountCmd =
         Cmd.ofPromise
             (fetchAs<Counter> "/api/init")
@@ -50,10 +51,12 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     | Some x, Decrement ->
         let nextModel = { currentModel with Counter = Some (x - 1) }
         nextModel, Cmd.none
-    | _, InitialCountLoaded (Ok initialCount)->
-        let nextModel = { Counter = Some initialCount }
+    | _, (ChangeRoute r) ->
+        let nextModel = { currentModel with Route = r } 
         nextModel, Cmd.none
-
+    | _, InitialCountLoaded (Ok initialCount)->
+        let nextModel = { currentModel with Counter = Some initialCount }
+        nextModel, Cmd.none
     | _ -> currentModel, Cmd.none
 
 
@@ -89,7 +92,12 @@ let button txt onClick =
 
 let view (model : Model) (dispatch : Msg -> unit) =
     div [ ]
-        [ Summit.site 
+        [ navDisp (dispatch << ChangeRoute) model.Route;
+          Summit.site;
+          div [] [ showRoute model.Route |> str ]
+          div [] [ show model |> str ]  
+          button "+" (fun _ -> dispatch Increment);
+          button "-" (fun _ -> dispatch Decrement)
         //   Container.container []
         //       [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
         //             [ Heading.h3 [] [ str ("Press buttons to manipulate counter: " + show model) ] ]
@@ -113,7 +121,4 @@ Program.mkProgram init update view
 |> Program.withHMR
 #endif
 |> Program.withReact "elmish-app"
-#if DEBUG
-|> Program.withDebugger
-#endif
 |> Program.run
