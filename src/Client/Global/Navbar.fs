@@ -25,13 +25,24 @@ let update msg model =
     | ToggleHamburger -> 
         { model with HamburgerOpen = not model.HamburgerOpen }, Cmd.none
 
+type LinkText = 
+    { Text: string
+      Link: string
+      Route: Route
+      Sublinks : LinkText list }
+
+
+
 let routes =
     [
-        { Text = "Home"; Link = "#"; Route = Home };
-        { Text = "Services"; Link = "#Services"; Route = Services };
-        { Text = "About Us"; Link = "#About"; Route = About };
-        { Text = "Contact"; Link = "#Contact"; Route = Contact };
-        { Text = "Blog"; Link = "#Blog"; Route = Blog };
+        { Text = "Home"; Link = "#"; Route = Home; Sublinks = [] };
+        { Text = "Services"; Link = "#Services"; Route = Services; Sublinks = [
+            { Text = "Integration"; Link = "#Services-Integration"; Route = Services; Sublinks = [] }
+            { Text = "Automation"; Link = "#Services-Automation"; Route = Services; Sublinks = [] }
+        ] };
+        { Text = "About Us"; Link = "#About"; Route = About; Sublinks = [] };
+        { Text = "Contact"; Link = "#Contact"; Route = Contact; Sublinks = [] };
+        { Text = "Blog"; Link = "#Blog"; Route = Blog; Sublinks = [] };
     ]
 
 let private sameLink a b = 
@@ -39,17 +50,30 @@ let private sameLink a b =
 
 let navBrand imgSrc =
    Navbar.Brand.div [ ]
-            [ Navbar.Item.a [ Navbar.Item.Props [ Href "#" ] ]
+            [ Navbar.Link.a [ Navbar.Link.Props [ Href "#" ] ]
                 [ img [ Style [ Width "15rem"]
                         Src imgSrc ] ] ] 
 
-let navLink dispatch current link =
-    let isActive = sameLink current link.Route 
-    Navbar.Item.a 
-        [ Navbar.Item.Props [Href link.Link; OnClick (fun _ -> dispatch link.Route)];
-          Navbar.Item.IsActive isActive;
-          Navbar.Item.IsTab ]
-        [ str link.Text ]
+let rec navLink dispatch current link =
+    let isActive = sameLink current link.Route
+    let item = 
+        Navbar.Item.a 
+            [ Navbar.Item.Props [Href link.Link; OnClick (fun _ -> dispatch link.Route)];
+              Navbar.Item.IsActive isActive;
+              Navbar.Item.IsTab ]
+            [ str link.Text ]
+    let linkItem = 
+        Navbar.Link.a
+            [ Navbar.Link.Props [Href link.Link; OnClick (fun _ -> dispatch link.Route)]
+              Navbar.Link.IsActive isActive; ]
+            [ str link.Text ]
+    match link.Sublinks with
+    | [] -> item
+    | x -> Navbar.Item.div
+            [Navbar.Item.HasDropdown; Navbar.Item.IsHoverable]
+            [ linkItem;
+              Navbar.Dropdown.div [] (List.map (navLink dispatch current) x)
+            ]
 
 
 let hiddenLinks links = 
