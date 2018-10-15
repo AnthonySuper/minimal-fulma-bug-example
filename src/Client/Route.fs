@@ -12,8 +12,7 @@ type Route
     | Services
     | About
     | Contact
-    | BlogIndex
-    | BlogPost of BlogId
+    | Blog
 
 
 let showRoute route = 
@@ -23,8 +22,6 @@ let showRoute route =
     | About -> "About"
     | Contact -> "Contact"
     | _ -> "Blog"
-
-
 
 type LinkText = 
     { Text: string
@@ -37,15 +34,11 @@ let routes =
         { Text = "Services"; Link = "#Services"; Route = Services };
         { Text = "About Us"; Link = "#About"; Route = About };
         { Text = "Contact"; Link = "#Contact"; Route = Contact };
-        { Text = "Blog"; Link = "#Blog"; Route = BlogIndex };
+        { Text = "Blog"; Link = "#Blog"; Route = Blog };
     ]
 
 let private sameLink a b = 
-    match a, b with
-    | (BlogIndex, BlogIndex) -> true 
-    | (BlogPost _, BlogIndex) -> true
-    | (BlogIndex, BlogPost _) -> true
-    | (a, b) -> a = b
+    a = b
 
 let navBrand imgSrc =
    Navbar.Brand.div [ ]

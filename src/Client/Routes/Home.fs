@@ -7,36 +7,42 @@ open Fable.Helpers.React.Props
 open Fulma
 open Helpers.Basic
 
+    // A less-than-pretty basic counter serves as the gadget on the home page.
+    // So, our model consists of one Int
     type Model
         = { Count : int }
 
-    
-
+    // We can increment or decrement our int
     type Msg =
-        | ChangeRoute of Route
         | Increment
         | Decrement
 
+    // To start off, our counter is at zero, and we do not do any side-effects
     let init (a:unit) =
         { Count = 0 }, Cmd.none
 
+    // We update by either incrementing or decrementing our Int
     let update msg model =
         match msg with
         | Increment -> { model with Count = model.Count + 1 }, Cmd.none
         | Decrement -> { model with Count = model.Count - 1 }, Cmd.none
-        | _ -> model, Cmd.none
+
+    // Separate out the counter buttons and display from the header for readability 
     let counterParts model dispatch =  
         [ button "+" (fun _ -> dispatch Increment) 
           Notification.notification [Notification.Color IsInfo] [str (string model.Count)]
           button "-" (fun _ -> dispatch Decrement)
         ]
 
+    // Try to align the buttons and the counter so they look nice,
+    // with absolutely no success 
     let counter model dispatch =
         let parts = counterParts model dispatch
         Level.level
             []
             (parts |> List.map (Level.item [] << fun x -> [x]))
 
+    // A nice hero title kinda thing
     let title = bigTitleS "Summit Investment Technologies" "The Grease on the Cogs of Capitalism"
 
     let view (model : Model) (dispatch : Msg -> Unit) routeDispatch =

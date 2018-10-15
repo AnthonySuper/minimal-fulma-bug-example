@@ -11,6 +11,7 @@
         <Compile Include="Routes\Services.fs" />
         <Compile Include="Routes\About.fs" />
         <Compile Include="Routes\Contact.fs" />
+        <Compile Include="Routes\Blog.fs" />
         <Compile Include="summit.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>

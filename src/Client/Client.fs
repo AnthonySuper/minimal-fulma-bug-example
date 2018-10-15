@@ -22,7 +22,8 @@ type PageModel =
     | HomeModel of Routes.Home.Model
     | ServicesModel of Routes.Services.Model
     | AboutModel of Routes.About.Model
-    | ContactModel of Routes.Contact.Model 
+    | ContactModel of Routes.Contact.Model
+    | BlogModel of Routes.Blog.Model
 
 // Change from a PageModel over to a type that merely describes which route we're on
 // This allows us to properly display the route tabs as "active" when need be
@@ -31,7 +32,8 @@ let getRoute r =
     | HomeModel _ -> Home
     | ServicesModel _ -> Services
     | AboutModel _ -> About
-    | ContactModel _ -> Contact 
+    | ContactModel _ -> Contact
+    | BlogModel _ -> Blog 
 
 
 // Our model is very simple, and only consists of the model for each individual page
@@ -46,6 +48,7 @@ type Msg =
 | ServicesMsg of Routes.Services.Msg
 | AboutMsg of Routes.About.Msg
 | ContactMsg of Routes.Contact.Msg 
+| BlogMsg of Routes.Blog.Msg
 
 // The initial state and the initial effectful action.
 // In this case, we don't have any effectful action, and we start on the home page.
@@ -67,6 +70,9 @@ let private routeData r =
     | Contact ->
         let (m, c) = Routes.Contact.init ()
         ContactModel m, Cmd.map ContactMsg c
+    | Blog ->
+        let (m, c) = Routes.Blog.init () 
+        BlogModel m, Cmd.map BlogMsg c 
     | _ ->
         // By default, go to the home page 
         let (m, c) = Routes.Home.init ()
@@ -100,6 +106,9 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     | (ContactModel cm, ContactMsg m) ->
         let (d, c) = Routes.Contact.update m cm
         {currentModel with PageModel = (ContactModel d)}, Cmd.map ContactMsg c
+    | (BlogModel bm, BlogMsg m) ->
+        let (d, c) = Routes.Blog.update m bm
+        {currentModel with PageModel = (BlogModel d)}, Cmd.map BlogMsg c 
     | _ -> currentModel, Cmd.none
 
 // Which page should we display?
@@ -114,6 +123,7 @@ let viewRoute model dispatch =
     | ServicesModel m -> Routes.Services.view m (dispatch << ServicesMsg)
     | AboutModel m -> Routes.About.view m (dispatch << AboutMsg)
     | ContactModel m -> Routes.Contact.view m (dispatch << ContactMsg)
+    | BlogModel m -> Routes.Blog.view m (dispatch << BlogMsg)
     | _ -> (fun _ -> div [] [])
 
 let view (model : Model) (dispatch : Msg -> unit) =
