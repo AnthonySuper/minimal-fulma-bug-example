@@ -46,17 +46,17 @@ let private routeData r =
     match r with
     | Services ->
         let (m, c) = Routes.Services.init ()
-        ServicesModel m, Cmd.none
+        ServicesModel m, Cmd.map ServicesMsg c 
     | About -> 
         let (m, c) = Routes.About.init ()
-        AboutModel m, Cmd.none
+        AboutModel m, Cmd.map AboutMsg c
     | Contact ->
         let (m, c) = Routes.Contact.init ()
-        ContactModel m, Cmd.none
+        ContactModel m, Cmd.map ContactMsg c
     | _ ->
         // By default, go to the home page 
         let (m, c) = Routes.Home.init ()
-        HomeModel m, Cmd.none
+        HomeModel m, Cmd.map HomeMsg c
 
     
 let private changeRoute r model =

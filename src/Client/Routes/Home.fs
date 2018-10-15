@@ -10,13 +10,15 @@ open Helpers.Basic
     type Model
         = { Count : int }
 
-    let init() =
-        { Count = 0 }, Cmd.none
+    
 
     type Msg =
         | ChangeRoute of Route
         | Increment
         | Decrement
+
+    let init (a:unit) =
+        { Count = 0 }, Cmd.none
 
     let update msg model =
         match msg with
