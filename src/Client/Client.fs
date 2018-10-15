@@ -82,40 +82,12 @@ let viewRoute model dispatch =
     | ContactModel m -> Routes.Contact.view m (dispatch << ContactMsg)
     | _ -> (fun _ -> div [] [])
 
-let safeComponents =
-    let components =
-        span [ ]
-           [
-             a [ Href "https://saturnframework.github.io" ] [ str "Saturn" ]
-             str ", "
-             a [ Href "http://fable.io" ] [ str "Fable" ]
-             str ", "
-             a [ Href "https://elmish.github.io/elmish/" ] [ str "Elmish" ]
-             str ", "
-             a [ Href "https://mangelmaxime.github.io/Fulma" ] [ str "Fulma" ]
-           ]
-
-    p [ ]
-        [ strong [] [ str "Built using SAFE Stack" ]
-          str " powered by: "
-          components ]
 let view (model : Model) (dispatch : Msg -> unit) =
     div [ ClassName "overall-container" ]
         [ navDisp (dispatch << ChangeRoute) model.Route;
           div [ ClassName "main-content"]
              [ viewRoute model dispatch (dispatch << ChangeRoute) ]
-          div [] [ showRoute model.Route |> str ]
-        //   Container.container []
-        //       [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-        //             [ Heading.h3 [] [ str ("Press buttons to manipulate counter: " + show model) ] ]
-        //         Columns.columns []
-        //             [ Column.column [] [ button "-" (fun _ -> dispatch Decrement) ]
-        //               Column.column [] [ button "+" (fun _ -> dispatch Increment) ] ] ]
-
-          Footer.footer [ ]
-                [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ safeComponents ] ] ]
-
+        ]
 
 #if DEBUG
 open Elmish.Debug
