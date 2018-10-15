@@ -5,8 +5,8 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="..\Shared\Shared.fs" />
-        <Compile Include="..\Routes\Home.fs" />
         <Compile Include="Route.fs" />
+        <Compile Include="Routes\Home.fs" />
         <Compile Include="summit.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>
