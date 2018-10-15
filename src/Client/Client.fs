@@ -10,7 +10,7 @@ open Fable.Helpers.React.Props
 open Fable.PowerPack.Fetch
 open Route
 open Shared
-
+open Global.Navbar
 open Fulma
 
 // Each page of this little app has its own data model.
@@ -25,6 +25,8 @@ type PageModel =
     | ContactModel of Routes.Contact.Model
     | BlogModel of Routes.Blog.Model
 
+
+
 // Change from a PageModel over to a type that merely describes which route we're on
 // This allows us to properly display the route tabs as "active" when need be
 let getRoute r =
@@ -36,12 +38,13 @@ let getRoute r =
     | BlogModel _ -> Blog 
 
 
-// Our model is very simple, and only consists of the model for each individual page
+// Our model is very simple, and consists of the model of the Global.Navbar state, plus the page state
 type Model 
-    = { PageModel: PageModel } 
+    = { PageModel: PageModel
+        NavbarModel: Global.Navbar.Model } 
 
-// Our messages are also very simple. We can either change the route, or update the model
-// of the current page. Thus: 
+// Our messages are also very simple. We can either change the route, change the Global.Navbar state,
+// or update the model of the current page. Thus: 
 type Msg =
 | ChangeRoute of Route
 | HomeMsg of Routes.Home.Msg
@@ -49,12 +52,14 @@ type Msg =
 | AboutMsg of Routes.About.Msg
 | ContactMsg of Routes.Contact.Msg 
 | BlogMsg of Routes.Blog.Msg
+| NavbarMsg of Global.Navbar.Msg
 
 // The initial state and the initial effectful action.
 // In this case, we don't have any effectful action, and we start on the home page.
 let init () : Model * Cmd<Msg> =
     let home, homeCmd = Routes.Home.init ()
-    let initialModel = { PageModel = HomeModel home }
+    let navModel, navCmd = Global.Navbar.init ()
+    let initialModel = { NavbarModel = navModel; PageModel = HomeModel home }
     initialModel, Cmd.none
 
 // How should we respond to a page-change request?
@@ -108,7 +113,10 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         {currentModel with PageModel = (ContactModel d)}, Cmd.map ContactMsg c
     | (BlogModel bm, BlogMsg m) ->
         let (d, c) = Routes.Blog.update m bm
-        {currentModel with PageModel = (BlogModel d)}, Cmd.map BlogMsg c 
+        {currentModel with PageModel = (BlogModel d)}, Cmd.map BlogMsg c
+    | (_, NavbarMsg m) ->
+        let (d, c) = Global.Navbar.update m currentModel.NavbarModel
+        {currentModel with NavbarModel = d}, Cmd.map NavbarMsg c
     | _ -> currentModel, Cmd.none
 
 // Which page should we display?
@@ -128,7 +136,7 @@ let viewRoute model dispatch =
 
 let view (model : Model) (dispatch : Msg -> unit) =
     div [ ClassName "overall-container" ]
-        [ navDisp (dispatch << ChangeRoute) (getRoute model.PageModel);
+        [ Global.Navbar.view (dispatch << NavbarMsg) model.NavbarModel (dispatch << ChangeRoute) (getRoute model.PageModel);
           div [ ClassName "main-content"]
              [ viewRoute model dispatch (dispatch << ChangeRoute) ]
              // this dispatch << ChangeRoute bit here is a way to more easily

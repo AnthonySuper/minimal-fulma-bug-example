@@ -14,7 +14,6 @@ type Route
     | Contact
     | Blog
 
-
 let showRoute route = 
     match route with
     | Home -> "Home"
@@ -54,9 +53,13 @@ let navLink dispatch current link =
           Navbar.Item.IsTab ]
         [ str link.Text ]
 
+
+let hiddenLinks links = 
+    Navbar.Brand.div [ Modifiers [Modifier.IsHidden (Screen.Tablet, false)] ] links
+
 let brandLogo = navBrand "./images/summit_logo.png"
 let navDisp dispatch current =
     let links = (List.map (navLink dispatch current) routes)
     Navbar.navbar []
-        (brandLogo::links)
+        [brandLogo; hiddenLinks links]
 
