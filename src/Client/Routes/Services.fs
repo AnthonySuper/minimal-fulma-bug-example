@@ -28,7 +28,3 @@ module Routes.Services
               Section.section [Section.Props [ Props.Id "automation"]]
                 [yield! titleSub "Automation" "Making Work Disappear"]
             ]
-              
-              
-           
-            

@@ -61,8 +61,8 @@ let navBrand imgSrc =
                 [ img [ Style [ Width "15rem"]
                         Src imgSrc ] ] ] 
 
-let rec navLink dispatch current link =
-    let isActive = sameLink current link.Route
+let rec navLink dispatch current showActive link =
+    let isActive = showActive && sameLink current link.Route
     let item = 
         Navbar.Item.a 
             [ Navbar.Item.Props [Href link.Link; OnClick (fun _ -> dispatch link.Route)];
@@ -79,7 +79,7 @@ let rec navLink dispatch current link =
     | x -> Navbar.Item.div
             [Navbar.Item.HasDropdown; Navbar.Item.IsHoverable]
             [ linkItem;
-              Navbar.Dropdown.div [] (List.map (navLink dispatch current) x)
+              Navbar.Dropdown.div [] (List.map (navLink dispatch current false) x)
             ]
 
 
@@ -91,11 +91,10 @@ let burgerOptions dispatch model = List.ofSeq (seq {
             yield! [CustomClass "is-active"]
         yield Fulma.Common.Props [ (OnClick (fun _ -> dispatch ToggleHamburger)) ]
 })
-  
 
 let brandLogo = navBrand "images/summit_logo.png"
 let view dispatch model dispatchRoute currentRoute =
-    let links = (List.map (navLink dispatchRoute currentRoute) routes)
+    let links = (List.map (navLink dispatchRoute currentRoute true) routes)
     Navbar.navbar []
         [  Navbar.Brand.div
             [CustomClass "force-flex"]
