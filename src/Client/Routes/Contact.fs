@@ -9,6 +9,7 @@ module Routes.Contact
         = { Name : string
             Email : string
             Comment : string
+            Telephone : string
             Submitted : bool
             Submitting : bool }
 
@@ -16,12 +17,14 @@ module Routes.Contact
     | ChangeName of string
     | ChangeEmail of string
     | ChangeComment of string
+    | ChangeTelephone of string
     | TrySubmit 
     | SubmitSuccess
     let init() : Model * Cmd<Msg> =
         { Name = ""; 
           Email = ""; 
-          Comment = ""; 
+          Comment = "";
+          Telephone = "";
           Submitted = false; 
           Submitting = false }, Cmd.none
 
@@ -63,7 +66,8 @@ module Routes.Contact
         | ChangeEmail e -> {model with Email = e} |> noSubmit
         | ChangeName n -> {model with Name = n} |> noSubmit
         | ChangeComment c -> {model with Comment = c} |> noSubmit
-        | TrySubmit -> { model with Submitting = true } |> trySubmit 
+        | ChangeTelephone c -> {model with Comment = c} |> noSubmit
+        | TrySubmit -> { model with Submitting = true } |> trySubmit
         | SubmitSuccess -> 
             { model with Submitted = true; 
                          Submitting = false;
@@ -99,21 +103,36 @@ module Routes.Contact
         withLabel label 
             (Input.text 
                 [ Input.OnChange (change << toValue) 
-                  Input.Value value])
+                  Input.Value value
+                  Input.Props
+                    [Props.Required true]])
     
     // See above, but for email
     let labeledEmail label value change =
         withLabel label 
             (Input.email 
                 [ Input.OnChange (change << toValue)
-                  Input.Value value])
+                  Input.Value value
+                  Input.Props 
+                    [ Props.Pattern ".+@.+\\..+" 
+                      Props.Required true]])
+
+
+    let labeledTel label value change =
+        Input.tel
+            [ Input.OnChange (change << toValue) 
+              Input.Value value
+              Input.Props 
+                [ Props.Required false ]]
+            |> withLabel label 
 
     // See above, but for a text area
     let labeledArea label value change =
         withLabel label 
             (Textarea.textarea 
                   [ Textarea.OnChange (change << toValue) 
-                    Textarea.Value value ] [] )
+                    Textarea.Value value
+                    Textarea.Props [ Props.Required true ] ] [] )
 
     // Display a submission notification.
     // That is, if we've just submitted, tell the user.
@@ -135,15 +154,16 @@ module Routes.Contact
 
     // Abstract out the form into its own function for readability
     let contactForm model dispatch =
-        form [] 
+        form [Props.OnSubmit (fun c -> c.preventDefault (); dispatch TrySubmit ) ] 
             [ labledText "Name" model.Name (dispatch << ChangeName)
               labeledEmail "Email" model.Email (dispatch << ChangeEmail) 
+              labeledTel "Telephone (Optional)" model.Telephone (dispatch << ChangeTelephone)
               labeledArea "Inquiry" model.Comment (dispatch << ChangeComment)
               Field.div []
                 [ Control.div [] 
                     [Button.button 
                         [ Button.Color IsPrimary
-                          Button.OnClick (fun c -> c.preventDefault (); dispatch TrySubmit )] 
+                          Button.Props [ Props.Type "submit" ] ]
                         [ str "Submit"] ] ]
               submitNotification model ]
 
