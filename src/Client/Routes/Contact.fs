@@ -66,7 +66,7 @@ let update msg model =
     | ChangeEmail e -> {model with Email = e} |> noSubmit
     | ChangeName n -> {model with Name = n} |> noSubmit
     | ChangeComment c -> {model with Comment = c} |> noSubmit
-    | ChangeTelephone c -> {model with Comment = c} |> noSubmit
+    | ChangeTelephone c -> {model with Telephone = c} |> noSubmit
     | TrySubmit -> { model with Submitting = true } |> trySubmit
     | SubmitSuccess -> 
         { model with Submitted = true; 
