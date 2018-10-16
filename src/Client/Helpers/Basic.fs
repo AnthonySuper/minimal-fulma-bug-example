@@ -16,7 +16,7 @@ let bigTitleS title subtitle =
 
     
 let bigHeroS title subtitle =
-  Hero.hero []
+  Hero.hero [ Hero.Color Color.IsPrimary ]
     [ Hero.head [] []
       Hero.body [] [ bigTitleS title subtitle ]
       Hero.foot [] [] ]
