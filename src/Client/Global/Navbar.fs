@@ -54,6 +54,7 @@ let hashToLoc hash =
 let private sameLink a b = 
     a = b
 
+
 let navBrand imgSrc =
    Navbar.Brand.div [ ]
             [ Navbar.Link.a [ Navbar.Link.Props [ Href "#" ] ]
