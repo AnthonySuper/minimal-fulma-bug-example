@@ -22,7 +22,6 @@ let bigHeroS title subtitle =
       Hero.foot [] [] ]
 let button txt onClick =
     Button.button
-        [ Button.IsFullWidth
-          Button.Color IsPrimary
+        [ Button.Color IsPrimary
           Button.OnClick onClick ]
         [ str txt ]

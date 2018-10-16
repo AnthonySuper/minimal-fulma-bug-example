@@ -30,7 +30,7 @@ open Helpers.Basic
     // Separate out the counter buttons and display from the header for readability 
     let counterParts model dispatch =  
         [ button "+" (fun _ -> dispatch Increment) 
-          Notification.notification [Notification.Color IsInfo] [str (string model.Count)]
+          str (string model.Count)
           button "-" (fun _ -> dispatch Decrement)
         ]
 
@@ -38,9 +38,10 @@ open Helpers.Basic
     // with absolutely no success 
     let counter model dispatch =
         let parts = counterParts model dispatch
-        Level.level
-            []
-            (parts |> List.map (Level.item [] << fun x -> [x]))
+        Section.section []
+            [ Level.level
+                []
+                [Level.left [] (parts |> List.map (Level.item [] << fun x -> [x]))] ]
 
     // A nice hero title kinda thing
     let hero = bigHeroS "Summit Investment Technologies" "The Grease on the Cogs of Capitalism"
