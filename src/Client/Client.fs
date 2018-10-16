@@ -54,19 +54,26 @@ type Msg =
 | BlogMsg of Routes.Blog.Msg
 | NavbarMsg of Global.Navbar.Msg
 
+
+
+let findRoute() =
+    let revHash = Fable.Import.Browser.location.hash 
+    Cmd.ofMsg (ChangeRoute (hashToLoc revHash))
+   
+
 // The initial state and the initial effectful action.
 // In this case, we don't have any effectful action, and we start on the home page.
 let init () : Model * Cmd<Msg> =
     let home, homeCmd = Routes.Home.init ()
     let navModel, navCmd = Global.Navbar.init ()
     let initialModel = { NavbarModel = navModel; PageModel = HomeModel home }
-    initialModel, Cmd.none
+    initialModel, findRoute () 
 
 // How should we respond to a page-change request?
 // Quite easily: just re-load that page
 let private routeData r =
     match r with
-    | Services ->
+    | Services _ ->
         let (m, c) = Routes.Services.init ()
         ServicesModel m, Cmd.map ServicesMsg c 
     | About -> 

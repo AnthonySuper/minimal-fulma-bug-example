@@ -45,6 +45,12 @@ let routes =
         { Text = "Blog"; Link = "#Blog"; Route = Blog; Sublinks = [] };
     ]
 
+let hashToLoc hash = 
+    List.filter (fun i -> i.Link.StartsWith(hash)) routes
+    |> List.map (fun i -> i.Route)
+    |> List.tryHead
+    |> Option.defaultValue Home
+
 let private sameLink a b = 
     a = b
 
