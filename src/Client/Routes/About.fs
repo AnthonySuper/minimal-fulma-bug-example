@@ -11,13 +11,8 @@ module Routes.About
 
     let update msg model = model, Cmd.none
 
-    let private title = bigTitleS "About" "Who we are"
+    let private hero = bigHeroS "About" "Who we are"
 
     let view (model : Model) (dispatch : Msg -> Unit) (routeDispatch) =
-        Hero.hero []
-            [
-                Hero.head [] []
-                Hero.body [] [title]
-                Hero.foot [] []
-            ]
+        hero
             

@@ -43,17 +43,11 @@ open Helpers.Basic
             (parts |> List.map (Level.item [] << fun x -> [x]))
 
     // A nice hero title kinda thing
-    let title = bigTitleS "Summit Investment Technologies" "The Grease on the Cogs of Capitalism"
+    let hero = bigHeroS "Summit Investment Technologies" "The Grease on the Cogs of Capitalism"
 
     let view (model : Model) (dispatch : Msg -> Unit) routeDispatch =
-        Hero.hero []
-            [
-                Hero.head [] []
-                Hero.body []
-                    [ title; counter model dispatch ]
-                Hero.foot [] [] 
-            ]
-
+        div []
+            [ hero; counter model dispatch ]
 
 
        

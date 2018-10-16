@@ -69,17 +69,9 @@ module Routes.Contact
                          Submitting = false;
                          Comment = "" } |> yesSubmit
    
-
-    let private title = bigTitleS "Contact" "Let's get in touch"
-
     // First, the big hero introduction to the page
     let hero = 
-        Hero.hero []
-            [
-                Hero.head [] []
-                Hero.body [] [title]
-                Hero.foot [] []
-            ]
+        bigHeroS "Contact" "Let's get in touch"
     
     // A very simple function converting a `FormEvent` to the value of 
     // that field 

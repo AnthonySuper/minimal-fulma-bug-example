@@ -15,6 +15,11 @@ let bigTitleS title subtitle =
             [ str subtitle ] ]
 
     
+let bigHeroS title subtitle =
+  Hero.hero []
+    [ Hero.head [] []
+      Hero.body [] [ bigTitleS title subtitle ]
+      Hero.foot [] [] ]
 let button txt onClick =
     Button.button
         [ Button.IsFullWidth

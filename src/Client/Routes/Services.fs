@@ -1,6 +1,7 @@
 module Routes.Services
     open Elmish
     open Fulma
+    open Fable.Helpers.React
     open Helpers.Basic
 
     type Model = unit 
@@ -10,14 +11,9 @@ module Routes.Services
         (), Cmd.none
 
     let update msg model = model, Cmd.none
-
-    let private title = bigTitleS "Services" "How we can help you"
+    let hero =
+        bigHeroS "Services" "How we can help you"
 
     let view (model : Model) (dispatch : Msg -> Unit) (routeDispatch) =
-        Hero.hero []
-            [
-                Hero.head [] []
-                Hero.body [] [title]
-                Hero.foot [] []
-            ]
+        div [] [hero]
             
