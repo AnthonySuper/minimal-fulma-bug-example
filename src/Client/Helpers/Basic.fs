@@ -20,6 +20,8 @@ let bigHeroS title subtitle =
     [ Hero.head [] []
       Hero.body [] [ bigTitleS title subtitle ]
       Hero.foot [] [] ]
+
+
 let button txt onClick =
     Button.button
         [ Button.Color IsPrimary

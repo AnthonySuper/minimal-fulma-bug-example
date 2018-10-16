@@ -1,18 +1,19 @@
 module Routes.About
-    open Elmish
-    open Fulma
-    open Helpers.Basic
 
-    type Model = unit 
-    type Msg = unit 
+open Elmish
+open Fulma
+open Helpers.Basic
 
-    let init() : Model * Cmd<unit> =
-        (), Cmd.none
+type Model = unit 
+type Msg = unit 
 
-    let update msg model = model, Cmd.none
+let init() : Model * Cmd<unit> =
+    (), Cmd.none
 
-    let private hero = bigHeroS "About" "Who we are"
+let update msg model = model, Cmd.none
 
-    let view (model : Model) (dispatch : Msg -> Unit) (routeDispatch) =
-        hero
-            
+let private hero = bigHeroS "About" "Who we are"
+
+let view (model : Model) (dispatch : Msg -> Unit) (routeDispatch) =
+    hero
+        
