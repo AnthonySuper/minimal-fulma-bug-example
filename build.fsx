@@ -95,12 +95,23 @@ Target.create "Run" (fun _ ->
     |> ignore
 )
 
+Target.create "Bundle" (fun _ ->
+    runDotNet (sprintf "publish \"%s\" -c release -o \"%s\"" serverPath deployDir) __SOURCE_DIRECTORY__
+    Shell.copyDir (Path.combine deployDir "public") (Path.combine clientPath "public") FileFilter.allFiles
+)
+
+
 
 open Fake.Core.TargetOperators
 
 "Clean"
     ==> "InstallClient"
     ==> "Build"
+
+"Clean"
+    ==> "InstallClient"
+    ==> "Build"
+    ==> "Bundle"
 
 "Clean"
     ==> "InstallClient"
