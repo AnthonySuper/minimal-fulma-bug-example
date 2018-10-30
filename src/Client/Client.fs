@@ -4,103 +4,153 @@ open Summit
 open Elmish
 open Elmish.React
 
+
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 open Fable.PowerPack.Fetch
-
+open Route
 open Shared
-
+open Global.Navbar
 open Fulma
 
+// Each page of this little app has its own data model.
+// We define this so we can keep track of the data of the page we're currently on.
+// Elmish requires us to maintain a single global state, so this has to be a definition
+// at the top-level. However, it's defined in terms of types defined in the modules, so
+// this isn't really that bad.
+type PageModel =
+    | HomeModel of Routes.Home.Model
+    | ServicesModel of Routes.Services.Model
+    | AboutModel of Routes.About.Model
+    | ContactModel of Routes.Contact.Model
+    | BlogModel of Routes.Blog.Model
 
-// The model holds data that you want to keep track of while the application is running
-// in this case, we are keeping track of a counter
-// we mark it as optional, because initially it will not be available from the client
-// the initial value will be requested from server
-type Model = { Counter: Counter option }
 
-// The Msg type defines what events/actions can occur while the application is running
-// the state of the application changes *only* in reaction to these events
+
+// Change from a PageModel over to a type that merely describes which route we're on
+// This allows us to properly display the route tabs as "active" when need be
+let getRoute r =
+    match r with
+    | HomeModel _ -> Home
+    | ServicesModel _ -> Services
+    | AboutModel _ -> About
+    | ContactModel _ -> Contact
+    | BlogModel _ -> Blog 
+
+
+// Our model is very simple, and consists of the model of the Global.Navbar state, plus the page state
+type Model 
+    = { PageModel: PageModel
+        NavbarModel: Global.Navbar.Model } 
+
+// Our messages are also very simple. We can either change the route, change the Global.Navbar state,
+// or update the model of the current page. Thus: 
 type Msg =
-| Increment
-| Decrement
-| InitialCountLoaded of Result<Counter, exn>
+| ChangeRoute of Route
+| HomeMsg of Routes.Home.Msg
+| ServicesMsg of Routes.Services.Msg
+| AboutMsg of Routes.About.Msg
+| ContactMsg of Routes.Contact.Msg 
+| BlogMsg of Routes.Blog.Msg
+| NavbarMsg of Global.Navbar.Msg
 
 
 
-// defines the initial state and initial command (= side-effect) of the application
+let findRoute() =
+    let revHash = Fable.Import.Browser.location.hash 
+    Cmd.ofMsg (ChangeRoute (hashToLoc revHash))
+   
+
+// The initial state and the initial effectful action.
+// In this case, we don't have any effectful action, and we start on the home page.
 let init () : Model * Cmd<Msg> =
-    let initialModel = { Counter = None }
-    let loadCountCmd =
-        Cmd.ofPromise
-            (fetchAs<Counter> "/api/init")
-            []
-            (Ok >> InitialCountLoaded)
-            (Error >> InitialCountLoaded)
-    initialModel, loadCountCmd
+    let home, homeCmd = Routes.Home.init ()
+    let navModel, navCmd = Global.Navbar.init ()
+    let initialModel = { NavbarModel = navModel; PageModel = HomeModel home }
+    initialModel, findRoute () 
 
-// The update function computes the next state of the application based on the current state and the incoming events/messages
-// It can also run side-effects (encoded as commands) like calling the server via Http.
-// these commands in turn, can dispatch messages to which the update function will react.
+// How should we respond to a page-change request?
+// Quite easily: just re-load that page
+let private routeData r =
+    match r with
+    | Services _ ->
+        let (m, c) = Routes.Services.init ()
+        ServicesModel m, Cmd.map ServicesMsg c 
+    | About -> 
+        let (m, c) = Routes.About.init ()
+        AboutModel m, Cmd.map AboutMsg c
+    | Contact ->
+        let (m, c) = Routes.Contact.init ()
+        ContactModel m, Cmd.map ContactMsg c
+    | Blog ->
+        let (m, c) = Routes.Blog.init () 
+        BlogModel m, Cmd.map BlogMsg c 
+    | _ ->
+        // By default, go to the home page 
+        let (m, c) = Routes.Home.init ()
+        HomeModel m, Cmd.map HomeMsg c
+
+    
+let private changeRoute r model =
+    let (d, cmd) = routeData r 
+    {model with PageModel = d}, cmd 
+
+// In this function we write a bunch of boilerplate!
+// More specifically, we map each message to its data type.
+// So we map home mesages to the HomeModel, ServicesMsgs to the ServicesModel, and so on.
+// So far this has been what I like the least about Elmish: this is quite a bit of code that is
+// essentially just copy/paste. Ah well, though!
+// Note that our design ensures that we can only recieve the proper type of message for
+// the current page, as other pages can't see or know about other messages. So,
+// the catch-all at the bottom just makes the compiler happy.
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
-    match currentModel.Counter, msg with
-    | Some x, Increment ->
-        let nextModel = { currentModel with Counter = Some (x + 1) }
-        nextModel, Cmd.none
-    | Some x, Decrement ->
-        let nextModel = { currentModel with Counter = Some (x - 1) }
-        nextModel, Cmd.none
-    | _, InitialCountLoaded (Ok initialCount)->
-        let nextModel = { Counter = Some initialCount }
-        nextModel, Cmd.none
-
+    match (currentModel.PageModel, msg) with
+    | (_, ChangeRoute r) -> changeRoute r currentModel 
+    | (HomeModel hm, HomeMsg m) ->
+        let (d, c) = Routes.Home.update m hm
+        {currentModel with PageModel = (HomeModel d)}, Cmd.none
+    | (ServicesModel sm, ServicesMsg m) ->
+        let (d, c) = Routes.Services.update m sm
+        {currentModel with PageModel = (ServicesModel d)}, Cmd.map ServicesMsg c
+    | (AboutModel am, AboutMsg m) ->
+        let (d, c) = Routes.About.update m am
+        {currentModel with PageModel = (AboutModel d)}, Cmd.map AboutMsg c 
+    | (ContactModel cm, ContactMsg m) ->
+        let (d, c) = Routes.Contact.update m cm
+        {currentModel with PageModel = (ContactModel d)}, Cmd.map ContactMsg c
+    | (BlogModel bm, BlogMsg m) ->
+        let (d, c) = Routes.Blog.update m bm
+        {currentModel with PageModel = (BlogModel d)}, Cmd.map BlogMsg c
+    | (_, NavbarMsg m) ->
+        let (d, c) = Global.Navbar.update m currentModel.NavbarModel
+        {currentModel with NavbarModel = d}, Cmd.map NavbarMsg c
     | _ -> currentModel, Cmd.none
 
-
-let safeComponents =
-    let components =
-        span [ ]
-           [
-             a [ Href "https://saturnframework.github.io" ] [ str "Saturn" ]
-             str ", "
-             a [ Href "http://fable.io" ] [ str "Fable" ]
-             str ", "
-             a [ Href "https://elmish.github.io/elmish/" ] [ str "Elmish" ]
-             str ", "
-             a [ Href "https://mangelmaxime.github.io/Fulma" ] [ str "Fulma" ]
-           ]
-
-    p [ ]
-        [ strong [] [ str "Built using SAFE Stack" ]
-          str " powered by: "
-          components ]
-
-let show = function
-| { Counter = Some x } -> string x
-| { Counter = None   } -> "Loading..."
-
-let button txt onClick =
-    Button.button
-        [ Button.IsFullWidth
-          Button.Color IsPrimary
-          Button.OnClick onClick ]
-        [ str txt ]
-
+// Which page should we display?
+// In this case, it's quite simple.
+// If we have a HomeModel as our PageModel, display the home page.
+// If we have a ServicesModel as our PageModel, display the Services page.
+// You probably get the idea!
+// This is also very boiler-plate-ish but it's not too bad.
+let viewRoute model dispatch = 
+    match model.PageModel with
+    | HomeModel m -> Routes.Home.view m (dispatch << HomeMsg)
+    | ServicesModel m -> Routes.Services.view m (dispatch << ServicesMsg)
+    | AboutModel m -> Routes.About.view m (dispatch << AboutMsg)
+    | ContactModel m -> Routes.Contact.view m (dispatch << ContactMsg)
+    | BlogModel m -> Routes.Blog.view m (dispatch << BlogMsg)
+    | _ -> (fun _ -> div [] [])
 
 let view (model : Model) (dispatch : Msg -> unit) =
-    div [ ]
-        [ Summit.site 
-        //   Container.container []
-        //       [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-        //             [ Heading.h3 [] [ str ("Press buttons to manipulate counter: " + show model) ] ]
-        //         Columns.columns []
-        //             [ Column.column [] [ button "-" (fun _ -> dispatch Decrement) ]
-        //               Column.column [] [ button "+" (fun _ -> dispatch Increment) ] ] ]
-
-          Footer.footer [ ]
-                [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ safeComponents ] ] ]
-
+    div [ ClassName "overall-container" ]
+        [ Global.Navbar.view (dispatch << NavbarMsg) model.NavbarModel (dispatch << ChangeRoute) (getRoute model.PageModel);
+          div [ ClassName "main-content"]
+             [ viewRoute model dispatch (dispatch << ChangeRoute) ]
+             // this dispatch << ChangeRoute bit here is a way to more easily
+             // change the page from within the body of a page.
+             // Essentially, it's a function that lets child pages dispatch
+             // `ChangeRoute` messages more easily.
+        ]
 
 #if DEBUG
 open Elmish.Debug
@@ -113,7 +163,4 @@ Program.mkProgram init update view
 |> Program.withHMR
 #endif
 |> Program.withReact "elmish-app"
-#if DEBUG
-|> Program.withDebugger
-#endif
 |> Program.run

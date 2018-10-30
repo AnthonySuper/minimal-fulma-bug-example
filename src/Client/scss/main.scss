@@ -42,17 +42,6 @@ $primary-invert: $summitblue-invert;
 @import "../../../node_modules/bulma/bulma";
 
 
-.navbar-end {
-    display: inline-flex;
-    color: $summitblue;
-}
-.navbar-item img{
-    max-height:15rem;
-}
-.navbar-brand {
-    display: inline-block;    
-    vertical-align: bottom;    
-}
 
 // .hero-body {
 //     align-items: center
