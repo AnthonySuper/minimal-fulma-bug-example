@@ -36,10 +36,6 @@ type LinkText =
 let routes =
     [
         { Text = "Home"; Link = "#"; Route = Home; Sublinks = [] };
-        { Text = "Services"; Link = "#Services"; Route = Services; Sublinks = [
-            { Text = "Integration"; Link = "#Services-Integration"; Route = Services; Sublinks = [] }
-            { Text = "Automation"; Link = "#Services-Automation"; Route = Services; Sublinks = [] }
-        ] };
         { Text = "About Us"; Link = "#About"; Route = About; Sublinks = [] };
         { Text = "Contact"; Link = "#Contact"; Route = Contact; Sublinks = [] };
         { Text = "Blog"; Link = "#Blog"; Route = Blog; Sublinks = [] };
