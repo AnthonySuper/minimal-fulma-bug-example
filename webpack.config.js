@@ -1,6 +1,6 @@
 var path = require("path");
 var webpack = require("webpack");
-var fableUtils = require("fable-utils");
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -9,17 +9,17 @@ function resolve(filePath) {
     return path.join(__dirname, filePath)
 }
 
-var babelOptions = fableUtils.resolveBabelOptions({
+var babelOptions = {
     presets: [
-        ["env", {
+        ["@babel/preset-env", {
             "targets": {
                 "browsers": ["last 2 versions"]
             },
             "modules": false
         }]
     ],
-    plugins: ["transform-runtime"]
-});
+    plugins: ["@babel/plugin-transform-runtime"]
+};
 
 
 var isProduction = process.argv.indexOf("-p") >= 0;
@@ -32,9 +32,14 @@ var commonPlugins = [
         template: './public/index.html'
     })
 ];
+
+let ent = resolve('./src/Client/Client.fsproj');
+let scssEnt = resolve('./src/Client/scss/main.scss');
+
+
 module.exports = {
     devtool: "source-map",
-    entry : [ "whatwg-fetch", "babel-polyfill", resolve('./Client.fsproj'), './scss/main.scss' ],
+    entry : [ "whatwg-fetch", "@babel/polyfill", ent, scssEnt ],
     //entry: [ resolve('./Client.fsproj'), './scss/main.scss' ],
     mode: isProduction ? "production" : "development",
     // output: {
@@ -43,13 +48,12 @@ module.exports = {
     //     filename: "bundle.js"
     // },
     output: {
-        path: resolve('./public/js'),
+        path: resolve('./src/Client/public/js'),
         publicPath: "/js",
         filename: "bundle.js"
     },
     resolve: {
         symlinks: false,
-        modules: [resolve("../../node_modules/")]
     },
     
     devServer: {
@@ -59,7 +63,7 @@ module.exports = {
                 changeOrigin: true
             }
         },
-        contentBase: "./public",
+        contentBase: "./src/Client/public",
         hot: true,
         inline: true
     },

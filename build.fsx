@@ -11,6 +11,8 @@ open System
 open Fake.Core
 open Fake.DotNet
 open Fake.IO
+open Fake.IO.Globbing.Operators
+
 
 let serverPath = Path.getFullName "./src/Server"
 let clientPath = Path.getFullName "./src/Client"
@@ -74,7 +76,7 @@ Target.create "RestoreServer" (fun _ ->
 
 Target.create "Build" (fun _ ->
     runDotNet "build" serverPath
-    runDotNet "fable webpack --port free -- -p" clientPath
+    runDotNet "fable webpack --port free --" clientPath
 )
 
 Target.create "Run" (fun _ ->
@@ -98,6 +100,9 @@ Target.create "Run" (fun _ ->
 Target.create "Bundle" (fun _ ->
     runDotNet (sprintf "publish \"%s\" -c release -o \"%s\"" serverPath deployDir) __SOURCE_DIRECTORY__
     Shell.copyDir (Path.combine deployDir "public") (Path.combine clientPath "public") FileFilter.allFiles
+    let zipFile = "deploy.zip"
+    IO.File.Delete zipFile
+    Zip.zip deployDir zipFile !!(deployDir + @"\**\**")
 )
 
 
