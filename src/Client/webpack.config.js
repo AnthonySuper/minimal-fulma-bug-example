@@ -100,8 +100,12 @@ module.exports = {
             // }
         ]
     },
-    plugins: isProduction ? [] : [
+    plugins: isProduction ? [new MiniCssExtractPlugin({
+        filename: '[name].css',
+        chunkFilename: '[name]-[id].css'
+    })] : [
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin()
+        new webpack.NamedModulesPlugin(),
+        
     ]
 };
