@@ -10,7 +10,7 @@ open Shared
 
 open Giraffe.Serialization
 
-let publicPath = Path.GetFullPath "../Client/public"
+let publicPath = Path.GetFullPath "./public"
 let port = 8085us
 
 let getInitCounter() : Task<Counter> = task { return 42 }
