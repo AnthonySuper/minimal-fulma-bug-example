@@ -90,7 +90,6 @@ Target.create "Run" (fun _ ->
         do! Async.Sleep 5000
         openBrowser "http://localhost:8080"
     }
-
     [ server; client; browser ]
     |> Async.Parallel
     |> Async.RunSynchronously
