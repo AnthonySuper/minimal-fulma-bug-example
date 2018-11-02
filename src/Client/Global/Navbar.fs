@@ -6,6 +6,8 @@ open Fable.Helpers.React.Props
 open Fable.Helpers.React
 open Route
 open Fulma
+open Elmish.Browser.Navigation
+open Elmish.Browser.Navigation
 
 type Model
     = { HamburgerOpen : bool }
@@ -14,6 +16,7 @@ type Msg =
     | OpenHamburger
     | CloseHamburger
     | ToggleHamburger
+    | ChangeRoute of string 
 
 
 let init () = { HamburgerOpen = false }, Cmd.none
@@ -24,6 +27,8 @@ let update msg model =
     | CloseHamburger -> { model with HamburgerOpen = false }, Cmd.none
     | ToggleHamburger -> 
         { model with HamburgerOpen = not model.HamburgerOpen }, Cmd.none
+    | ChangeRoute s ->
+        model, Navigation.newUrl s 
 
 type LinkText = 
     { Text: string
@@ -36,9 +41,9 @@ type LinkText =
 let routes =
     [
         { Text = "Home"; Link = "#"; Route = Home; Sublinks = [] };
-        { Text = "About Us"; Link = "#About"; Route = About; Sublinks = [] };
-        { Text = "Contact"; Link = "#Contact"; Route = Contact; Sublinks = [] };
-        { Text = "Blog"; Link = "#Blog"; Route = Blog; Sublinks = [] };
+        { Text = "About Us"; Link = "#about"; Route = About; Sublinks = [] };
+        { Text = "Contact"; Link = "#contact"; Route = Contact; Sublinks = [] };
+        { Text = "Blog"; Link = "#blog"; Route = Blog; Sublinks = [] };
     ]
 
 let hashToLoc hash = 
@@ -50,6 +55,11 @@ let hashToLoc hash =
 let private sameLink a b = 
     a = b
 
+let replaceDefault (r : Lazy<unit>) (e : Fable.Import.React.SyntheticEvent) =
+    e.preventDefault ()
+    r.Force()
+
+let defaultClick act = replaceDefault act |> OnClick  
 
 let navBrand imgSrc =
    Navbar.Brand.div [ ]
@@ -57,17 +67,17 @@ let navBrand imgSrc =
                 [ img [ Style [ Width "15rem"]
                         Src imgSrc ] ] ] 
 
-let rec navLink dispatch current showActive link =
+let rec navLink changeRoute current showActive link =
     let isActive = showActive && sameLink current link.Route
     let item = 
         Navbar.Item.a 
-            [ Navbar.Item.Props [Href link.Link; OnClick (fun _ -> dispatch link.Route)];
+            [ Navbar.Item.Props [Href link.Link; lazy changeRoute link.Link |> defaultClick];
               Navbar.Item.IsActive isActive;
               Navbar.Item.IsTab ]
             [ str link.Text ]
     let linkItem = 
         Navbar.Link.a
-            [ Navbar.Link.Props [Href link.Link; OnClick (fun _ -> dispatch link.Route)]
+            [ Navbar.Link.Props [Href link.Link; lazy changeRoute link.Link |> defaultClick ]
               Navbar.Link.IsActive isActive; ]
             [ str link.Text ]
     match link.Sublinks with
@@ -75,7 +85,7 @@ let rec navLink dispatch current showActive link =
     | x -> Navbar.Item.div
             [Navbar.Item.HasDropdown; Navbar.Item.IsHoverable]
             [ linkItem;
-              Navbar.Dropdown.div [] (List.map (navLink dispatch current false) x)
+              Navbar.Dropdown.div [] (List.map (navLink changeRoute current false) x)
             ]
 
 
@@ -89,12 +99,15 @@ let burgerOptions dispatch model = List.ofSeq (seq {
 })
 
 let brandLogo = navBrand "images/summit_logo.png"
-let view dispatch model dispatchRoute currentRoute =
-    let links = (List.map (navLink dispatchRoute currentRoute true) routes)
+let view dispatch model currentRoute =
+    let links = (List.map (navLink (dispatch << ChangeRoute) currentRoute true) routes)
     Navbar.navbar []
         [  Navbar.Brand.div
             [CustomClass "force-flex"]
-            [ Navbar.Item.a [ Navbar.Item.Props [ Href "#" ] ]
+            [ Navbar.Item.a 
+                [ Navbar.Item.Props 
+                    [ Href "#" 
+                      lazy (dispatch (ChangeRoute "#")) |> defaultClick] ]
                 [img [Src "Images/summit_logo.png"]]
               Navbar.burger (burgerOptions dispatch model) 
                 [ span [] []
@@ -104,4 +117,3 @@ let view dispatch model dispatchRoute currentRoute =
            Navbar.menu [Navbar.Menu.IsActive model.HamburgerOpen]
             links
         ]
-

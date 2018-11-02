@@ -124,7 +124,7 @@ let warwickBody =
             """
     ]
 
-let view (model : Model) (dispatch : Msg -> Unit) (routeDispatch) =
+let view (model : Model) (dispatch : Msg -> Unit) =
     div []
         [
             hero;

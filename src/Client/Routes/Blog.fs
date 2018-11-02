@@ -13,6 +13,6 @@ let update msg model = model, Cmd.none
 
 let private hero = bigHeroS "Blog" "What we've been doing"
 
-let view (model : Model) (dispatch : Msg -> Unit) (routeDispatch) =
+let view (model : Model) (dispatch : Msg -> Unit) =
     hero
         

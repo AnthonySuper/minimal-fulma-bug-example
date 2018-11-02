@@ -21,7 +21,7 @@ let titleSub title subtitle =
       h2 [ ClassName "subtitle" ] [ str subtitle ] ]; 
 
 
-let view (model : Model) (dispatch : Msg -> Unit) (routeDispatch) =
+let view (model : Model) (dispatch : Msg -> Unit) =
     div [] 
         [ hero
           Section.section [Section.Props [ Props.Id "integration" ]]

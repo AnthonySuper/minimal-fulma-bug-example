@@ -101,7 +101,7 @@ let aboutSection =
 // A nice hero title kinda thing
 let hero = bigHeroS "Summit Investment Technologies" "Leveraging Technology to Reach Your Firm's Goals"
 
-let view (model : Model) (dispatch : Msg -> Unit) routeDispatch =
+let view (model : Model) (dispatch : Msg -> Unit) =
     article []
         [ 
             hero;

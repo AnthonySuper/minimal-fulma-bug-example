@@ -168,7 +168,7 @@ let contactForm model dispatch =
           submitNotification model ]
 
 // Nice, composite view
-let view (model : Model) (dispatch : Msg -> Unit) (routeDispatch : Route -> Unit) =
+let view (model : Model) (dispatch : Msg -> Unit) =
     div []
         [ hero
           Section.section [] 

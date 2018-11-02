@@ -7,18 +7,16 @@ open Fable.Helpers.React
 
 type BlogId = string
 
-type Route
-    = Home
-    | Services 
+type Route =
+    | Home
     | About
     | Contact
-    | Blog
+    | Blog 
 
 let showRoute route = 
     match route with
     | Home -> "Home"
-    | Services
     | About -> "About"
     | Contact -> "Contact"
-    | _ -> "Blog"
+    | Blog -> "Blog"
 
