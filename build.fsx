@@ -18,6 +18,8 @@ let serverPath = Path.getFullName "./src/Server"
 let clientPath = Path.getFullName "./src/Client"
 let deployDir = Path.getFullName "./deploy"
 
+let packageDir = Path.getFullName "./package"
+
 let platformTool tool winTool =
     let tool = if Environment.isUnix then tool else winTool
     match Process.tryFindFileOnPath tool with
@@ -99,7 +101,8 @@ Target.create "Run" (fun _ ->
 Target.create "Bundle" (fun _ ->
     runDotNet (sprintf "publish \"%s\" -c release -o \"%s\"" serverPath deployDir) __SOURCE_DIRECTORY__
     Shell.copyDir (Path.combine deployDir "public") (Path.combine clientPath "public") FileFilter.allFiles
-    let zipFile = "deploy.zip"
+    Directory.ensure(packageDir)
+    let zipFile = packageDir + "/" + "deploy.zip"
     IO.File.Delete zipFile
     Zip.zip deployDir zipFile !!(deployDir + @"\**\**")
 )
