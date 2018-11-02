@@ -51,8 +51,9 @@ let hashToLoc hash =
     |> List.tryHead
     |> Option.defaultValue Home
 
-let private sameLink a b = 
-    a = b
+//why this function
+// let private sameLink a b = 
+//     a = b
 
 let replaceDefault (r : Lazy<unit>) (e : Fable.Import.React.SyntheticEvent) =
     e.preventDefault ()
@@ -63,11 +64,10 @@ let defaultClick act = replaceDefault act |> OnClick
 let navBrand imgSrc =
    Navbar.Brand.div [ ]
             [ Navbar.Link.a [ Navbar.Link.Props [ Href "#" ] ]
-                [ img [ Style [ Width "15rem"]
-                        Src imgSrc ] ] ] 
+                [ img [ Src imgSrc ] ] ] 
 
 let rec navLink changeRoute current showActive link =
-    let isActive = showActive && sameLink current link.Route
+    let isActive = showActive && (current = link.Route)
     let item = 
         Navbar.Item.a 
             [ Navbar.Item.Props [Href link.Link; lazy changeRoute link.Link |> defaultClick];

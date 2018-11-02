@@ -1,0 +1,80 @@
+// https://bulma.io/documentation/overview/customize/
+
+@import "../../../node_modules/bulma/sass/utilities/initial-variables";
+@import "../../../node_modules/bulma/sass/utilities/functions";
+
+
+// custom variables
+$summitblue: #6A87D8;
+$summitblue-invert: findColorInvert($summitblue);
+$summitblack: rgba(0, 0, 0, 0.65);
+@font-face{
+    font-family: 'summit';
+    src: './Montserrat-Regular.ttf'
+}
+$primary: $summitblue;
+$primary-invert: $summitblue-invert;
+
+
+
+//navbar customizations
+// .navbar {
+    
+// }
+.navbar-item {
+    //font-family: 'summit';
+    line-height: 20;
+ }
+@import "../../../node_modules/bulma/bulma";
+// .navbar-item.is-tab.is-active {
+//     color: $summitblue;
+//     font-weight: bold;
+        
+// }
+//this needs to be at end, don't know why
+
+
+// $navy: #003057;
+// $navy-invert: #0193C1;
+
+// 3. Set the derived variables
+// $primary: $navy;
+// $primary-invert: $navy-invert;
+// $danger: $orange;
+// 4. Setup your Custom Colors
+// $linkedin: #0077b5;
+// $linkedin-invert: findColorInvert($linkedin);
+// $twitter: #55acee;
+// $twitter-invert: findColorInvert($twitter);
+// $github: #333;
+// $github-invert: findColorInvert($github);
+
+// Uncomment, save, wait for webpack to recompile the styles, and refresh the page...
+// $body-background-color: $green;
+
+// 5. Add new color variables to the color map.
+//@import "../../../node_modules/bulma/sass/utilities/derived-variables";
+// $addColors: (
+//   "twitter": ($twitter, $twitter-invert),
+//   "linkedin": ($linkedin, $linkedin-invert),
+//   "github": ($github, $github-invert)
+// );
+// $colors: map-merge($colors, $addColors);
+
+// 6. Import the rest of Bulma
+
+
+// .hero-body {
+//     align-items: center
+// }
+
+// // .hero.is-info {
+//     background:
+//         url(../../static/images/mountains.png)
+//          ;
+//     -webkit-background-size: cover;
+//     -moz-background-size: cover;
+//     -o-background-size: cover;
+//     background-size: cover;
+
+//   }
