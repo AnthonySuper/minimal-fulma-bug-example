@@ -7,7 +7,6 @@ open Fable.Helpers.React
 open Route
 open Fulma
 open Elmish.Browser.Navigation
-open Elmish.Browser.Navigation
 
 type Model
     = { HamburgerOpen : bool }

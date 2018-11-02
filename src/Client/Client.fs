@@ -137,4 +137,3 @@ Program.mkProgram init update view
 #endif
 |> Program.withReact "elmish-app"
 |> Program.run
-
