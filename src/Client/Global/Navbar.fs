@@ -102,17 +102,19 @@ let view dispatch model currentRoute =
     let links = (List.map (navLink (dispatch << ChangeRoute) currentRoute true) routes)
     Navbar.navbar []
         [  Navbar.Brand.div
+            //QUESTION from JF: What is force-flex?
             [CustomClass "force-flex"]
             [ Navbar.Item.a 
                 [ Navbar.Item.Props 
                     [ Href "#" 
                       lazy (dispatch (ChangeRoute "#")) |> defaultClick] ]
-                [img [Src "Images/summit_logo.png"]]
+                [img [Src "Images/summit_logo.png"]] //QUESTION from JF: Why this again?
               Navbar.burger (burgerOptions dispatch model) 
                 [ span [] []
                   span [] []
                   span [] [] ]
             ]
            Navbar.menu [Navbar.Menu.IsActive model.HamburgerOpen]
-            links
+            [Navbar.End.div []
+                links ]
         ]
