@@ -1,30 +1,10 @@
-module Routes.Home
+module View.Home.View
 
-open Route
-open Elmish
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
-open Fulma
+
+open View.Home.Types
 open Helpers.Basic
-
-
-// A less-than-pretty basic counter serves as the gadget on the home page.
-// So, our model consists of one Int
-type Model
-    = unit 
-
-// We can increment or decrement our int
-type Msg = unit
-
-// To start off, our counter is at zero, and we do not do any side-effects
-let init (a:unit) =
-    (), Cmd.none
-
-// We update by either incrementing or decrementing our Int
-let update msg model = (), Cmd.none
-
-// Separate out the counter buttons and display from the header for readability 
-
+open Fable.Helpers.React
+open Fulma
 let descStr =
     """
     We are dedicated to helping investment firms leverage technology to solve
@@ -35,7 +15,7 @@ let descStr =
 
 
 let titleTile title body =
-    let child = 
+    let child =
         Tile.child
             [Tile.Option.CustomClass "box"]
             [
@@ -80,7 +60,7 @@ let servicesSection =
         []
         [
             Heading.h2 [Heading.IsSpaced] [ str "Services" ]
-            Tile.ancestor 
+            Tile.ancestor
                 []
                 [
                     devTile
@@ -89,11 +69,11 @@ let servicesSection =
                 ]
         ]
 // Try to align the buttons and the counter so they look nice,
-// with absolutely no success 
+// with absolutely no success
 let aboutSection =
     Section.section
         []
-        [ 
+        [
             Heading.h2 [Heading.IsSpaced] [ str "Summit Investment Technologies, LLC" ]
             p [] [ str descStr ]
         ]
@@ -103,7 +83,7 @@ let hero = bigHeroS "Summit Investment Technologies" "Leveraging Technology to R
 
 let view (model : Model) (dispatch : Msg -> Unit) =
     article []
-        [ 
+        [
             hero;
             aboutSection;
             servicesSection;

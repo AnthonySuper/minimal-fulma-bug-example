@@ -7,12 +7,14 @@
         <Compile Include="..\Shared\Shared.fs" />
         <Compile Include="Helpers\Basic.fs" />
         <Compile Include="Route.fs" />
-        <Compile Include="Routes\Home.fs" />
-        <Compile Include="Routes\Services.fs" />
-        <Compile Include="Routes\About.fs" />
-        <Compile Include="Routes\Contact.fs" />
-        <Compile Include="Routes\Blog.fs" />
         <Compile Include="Global\Navbar.fs" />
+        <Compile Include="View\Home\Types.fs" />
+        <Compile Include="View\Home\State.fs" />
+        <Compile Include="View\Home\View.fs" />
+        <Compile Include="View\Services.fs" />
+        <Compile Include="View\Contact.fs" />
+        <Compile Include="View\About.fs" />
+        <Compile Include="View\Blog.fs" />
         <Compile Include="summit.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>

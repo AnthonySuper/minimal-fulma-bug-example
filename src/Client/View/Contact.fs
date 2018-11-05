@@ -1,9 +1,10 @@
-module Routes.Contact
+module View.Contact
+
 open Elmish
 open Fulma
 open Helpers.Basic
 open Fable.Helpers.React
-open Route
+
 
 type Model
     = { Name : string
@@ -18,14 +19,14 @@ type Msg =
 | ChangeEmail of string
 | ChangeComment of string
 | ChangeTelephone of string
-| TrySubmit 
+| TrySubmit
 | SubmitSuccess
 let init() : Model * Cmd<Msg> =
-    { Name = ""; 
-      Email = ""; 
+    { Name = "";
+      Email = "";
       Comment = "";
       Telephone = "";
-      Submitted = false; 
+      Submitted = false;
       Submitting = false }, Cmd.none
 
 // Say that we don't actually have a command to run
@@ -68,24 +69,24 @@ let update msg model =
     | ChangeComment c -> {model with Comment = c} |> noSubmit
     | ChangeTelephone c -> {model with Telephone = c} |> noSubmit
     | TrySubmit -> { model with Submitting = true } |> trySubmit
-    | SubmitSuccess -> 
-        { model with Submitted = true; 
+    | SubmitSuccess ->
+        { model with Submitted = true;
                      Submitting = false;
                      Comment = "" } |> yesSubmit
 
 // First, the big hero introduction to the page
-let hero = 
+let hero =
     bigHeroS "Contact" "Let's get in touch"
 
-// A very simple function converting a `FormEvent` to the value of 
-// that field 
+// A very simple function converting a `FormEvent` to the value of
+// that field
 let toValue (c: Fable.Import.React.FormEvent) = c.Value
 
-// Wrap an element in a container div with a label 
-let withLabel label body = 
+// Wrap an element in a container div with a label
+let withLabel label body =
     Field.div []
         [ Label.label [] [str label]
-          body ] 
+          body ]
 
 // A labeled text input.
 // We pass the `value` of the input because we want this value to be
@@ -100,37 +101,37 @@ let withLabel label body =
 // and that's how you make rich forms with React.
 // See: https://reactjs.org/docs/forms.html
 let labledText label value change =
-    withLabel label 
-        (Input.text 
-            [ Input.OnChange (change << toValue) 
+    withLabel label
+        (Input.text
+            [ Input.OnChange (change << toValue)
               Input.Value value
               Input.Props
                 [Props.Required true]])
 
 // See above, but for email
 let labeledEmail label value change =
-    withLabel label 
-        (Input.email 
+    withLabel label
+        (Input.email
             [ Input.OnChange (change << toValue)
               Input.Value value
-              Input.Props 
-                [ Props.Pattern ".+@.+\\..+" 
+              Input.Props
+                [ Props.Pattern ".+@.+\\..+"
                   Props.Required true]])
 
 
 let labeledTel label value change =
     Input.tel
-        [ Input.OnChange (change << toValue) 
+        [ Input.OnChange (change << toValue)
           Input.Value value
-          Input.Props 
+          Input.Props
             [ Props.Required false ]]
-        |> withLabel label 
+        |> withLabel label
 
 // See above, but for a text area
 let labeledArea label value change =
-    withLabel label 
-        (Textarea.textarea 
-              [ Textarea.OnChange (change << toValue) 
+    withLabel label
+        (Textarea.textarea
+              [ Textarea.OnChange (change << toValue)
                 Textarea.Value value
                 Textarea.Props [ Props.Required true ] ] [] )
 
@@ -139,11 +140,11 @@ let labeledArea label value change =
 // If we're trying to submit, tell the user.
 // Otherwise, render "nothing" (technically a blank span,
 // which is another react-ism. Technically more recent versions
-// of react do allow a "blank" node to be rendered, but as far 
+// of react do allow a "blank" node to be rendered, but as far
 // as I can tell, Elmish's version is older than that.
 let submitNotification model =
     if model.Submitted then
-        Notification.notification 
+        Notification.notification
             [Notification.Color IsSuccess]
             [str "Submitted"]
     elif model.Submitting then
@@ -154,14 +155,14 @@ let submitNotification model =
 
 // Abstract out the form into its own function for readability
 let contactForm model dispatch =
-    form [Props.OnSubmit (fun c -> c.preventDefault (); dispatch TrySubmit ) ] 
+    form [Props.OnSubmit (fun c -> c.preventDefault (); dispatch TrySubmit ) ]
         [ labledText "Name" model.Name (dispatch << ChangeName)
-          labeledEmail "Email" model.Email (dispatch << ChangeEmail) 
+          labeledEmail "Email" model.Email (dispatch << ChangeEmail)
           labeledTel "Telephone (Optional)" model.Telephone (dispatch << ChangeTelephone)
           labeledArea "Inquiry" model.Comment (dispatch << ChangeComment)
           Field.div []
-            [ Control.div [] 
-                [Button.button 
+            [ Control.div []
+                [Button.button
                     [ Button.Color IsPrimary
                       Button.Props [ Props.Type "submit" ] ]
                     [ str "Submit"] ] ]
@@ -171,6 +172,6 @@ let contactForm model dispatch =
 let view (model : Model) (dispatch : Msg -> Unit) =
     div []
         [ hero
-          Section.section [] 
+          Section.section []
             [Container.container [Container.IsFluid] [contactForm model dispatch]]
         ]

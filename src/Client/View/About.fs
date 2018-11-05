@@ -1,4 +1,4 @@
-module Routes.About
+module View.About
 
 open Elmish
 open Fulma
@@ -6,8 +6,8 @@ open Helpers.Basic
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
-type Model = unit 
-type Msg = unit 
+type Model = unit
+type Msg = unit
 
 let init() : Model * Cmd<unit> =
     (), Cmd.none
@@ -40,7 +40,7 @@ let private hero = bigHeroS "About" "Who we are"
 let paragraph s = p [] [str s]
 let frankBody =
     [
-        paragraph 
+        paragraph
             """
             As Chief Technology Officer and co-founder of Summit Investment Technologies, LLC,
             Mr. Frank is focused on helping organizations leverage technology to solve difficult
@@ -52,7 +52,7 @@ let frankBody =
             Prior to founding Summit Mr. Frank was DIrector of Quantitative Research at 361 Capital, LLC,
             where he had wide-ranging responsibilities that included all aspects of quantitative asset management:
             from strategy development to full stack software development, creating proprietary tools for
-            analysis and trading. During his tenure at 361 Capital Mr. Frank was instrumental in 
+            analysis and trading. During his tenure at 361 Capital Mr. Frank was instrumental in
             growing the firm from < $100 million to nearl $1 billion in assets under management.
             """
         paragraph
@@ -65,10 +65,10 @@ let frankBody =
 
         paragraph
             """
-            Mr. Frank holds a BA in Business Administration from Northwest University and a Master of 
-            Science in Finance from Boston College. In addition to a passion for investments and technology 
+            Mr. Frank holds a BA in Business Administration from Northwest University and a Master of
+            Science in Finance from Boston College. In addition to a passion for investments and technology
             he is an avid trail runner, completing numerous ultra-marathons, including two finishes
-            of the Leadville 100 Trail Run. However, his man enjoyment comes from spending time with his 
+            of the Leadville 100 Trail Run. However, his man enjoyment comes from spending time with his
             beautiful wife and five incredible children.
             """
     ]
@@ -88,7 +88,7 @@ let revyBody =
             """
             In addition to Mr. Revy's passion for FinTech, he manages a global convertible
             bond portfolio for Valex Capital AG and is Chairmen of Staub Holding AG, a firm focused
-            in Switzerland real estate development. He has been active in the investment 
+            in Switzerland real estate development. He has been active in the investment
             industry since 1002, where he started at Lehman as a software developer and moved into trading.
             He served as head of tech/research in convertable bonds during his tenture there.
             Mr. Revy holds a BA in Linquistics and Computer Science from UCLA and an MBA in
@@ -119,7 +119,7 @@ let warwickBody =
             """
             Mr. Warwick earned an MBA from the University of North Carolina, a BS in Chemcial Engineering
             from the University of Florida, and additional undergraduate degrees in physics and chemistry.
-            He enjoys playing tennis, scuba diving, and other activities with his wife of more than 
+            He enjoys playing tennis, scuba diving, and other activities with his wife of more than
             thirty years and their three children.
             """
     ]
