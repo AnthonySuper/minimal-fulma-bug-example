@@ -11,9 +11,13 @@
         <Compile Include="View\Home\Types.fs" />
         <Compile Include="View\Home\State.fs" />
         <Compile Include="View\Home\View.fs" />
+        <Compile Include="View\About\Types.fs" />
+        <Compile Include="View\About\State.fs" />
+        <Compile Include="View\About\View.fs" />
+        <Compile Include="View\Contact\Types.fs" />
+        <Compile Include="View\Contact\State.fs" />
+        <Compile Include="View\Contact\View.fs" />
         <Compile Include="View\Services.fs" />
-        <Compile Include="View\Contact.fs" />
-        <Compile Include="View\About.fs" />
         <Compile Include="View\Blog.fs" />
         <Compile Include="summit.fs" />
         <Compile Include="Client.fs" />

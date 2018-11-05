@@ -23,8 +23,8 @@ open Fulma
 type PageModel =
     | HomeModel of View.Home.Types.Model
     | ServicesModel of View.Services.Model
-    | AboutModel of View.About.Model
-    | ContactModel of View.Contact.Model
+    | AboutModel of View.About.Types.Model
+    | ContactModel of View.Contact.Types.Model
     | BlogModel of View.Blog.Model
 
 // Change from a PageModel over to a type that merely describes which route we're on
@@ -35,7 +35,7 @@ type PageModel =
 // Our model is very simple, and consists of the model of the Global.Navbar state, plus the page state
 type Model
     = { Route: Route
-        ContactModel: View.Contact.Model
+        ContactModel: View.Contact.Types.Model
         NavbarModel: Global.Navbar.Model }
 
 // Our messages are also very simple. We can either change the route, change the Global.Navbar state,
@@ -43,8 +43,8 @@ type Model
 type Msg =
 | HomeMsg of View.Home.Types.Msg
 | ServicesMsg of View.Services.Msg
-| AboutMsg of View.About.Msg
-| ContactMsg of View.Contact.Msg
+| AboutMsg of View.About.Types.Msg
+| ContactMsg of View.Contact.Types.Msg
 | BlogMsg of View.Blog.Msg
 | NavbarMsg of Global.Navbar.Msg
 
@@ -71,7 +71,7 @@ let route (st: UrlParser.State<(Route -> Route)>)=
 // In this case, we don't have any effectful action, and we start on the home page.
 let init r : Model * Cmd<Msg> =
     let route = Option.defaultValue Home r
-    let cm, _ = View.Contact.init ()
+    let cm, _ = View.Contact.State.init ()
     let navModel, navCmd = Global.Navbar.init ()
     let initialModel = { NavbarModel = navModel; Route = route; ContactModel = cm }
     initialModel, Cmd.none
@@ -89,7 +89,7 @@ let init r : Model * Cmd<Msg> =
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     match msg with
     | (ContactMsg cm) ->
-        let d, c = View.Contact.update cm currentModel.ContactModel
+        let d, c = View.Contact.State.update cm currentModel.ContactModel
         {currentModel with ContactModel = d}, Cmd.map ContactMsg c
     | (NavbarMsg m) ->
         let (d, c) = Global.Navbar.update m currentModel.NavbarModel
@@ -106,8 +106,8 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
 let viewRoute model dispatch =
     match model.Route with
     | Home -> View.Home.View.view () (dispatch << HomeMsg)
-    | About -> View.About.view () (dispatch << AboutMsg)
-    | Contact -> View.Contact.view model.ContactModel (dispatch << ContactMsg)
+    | About -> View.About.View.view () (dispatch << AboutMsg)
+    | Contact -> View.Contact.View.view model.ContactModel (dispatch << ContactMsg)
     | Blog -> View.Blog.view () (dispatch << BlogMsg)
 
 let view (model : Model) (dispatch : Msg -> unit) =

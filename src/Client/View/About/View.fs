@@ -1,18 +1,11 @@
-module View.About
+module View.About.View
 
-open Elmish
+
 open Fulma
 open Helpers.Basic
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
-
-type Model = unit
-type Msg = unit
-
-let init() : Model * Cmd<unit> =
-    (), Cmd.none
-
-let update msg model = model, Cmd.none
+open View.About.Types
 
 let mediaSection' imsrc title body =
     Media.media []
