@@ -39,17 +39,11 @@ type LinkText =
 
 let routes =
     [
-        { Text = "Home"; Link = "#"; Route = Home; Sublinks = [] };
-        { Text = "About Us"; Link = "#about"; Route = About; Sublinks = [] };
-        { Text = "Contact"; Link = "#contact"; Route = Contact; Sublinks = [] };
-        { Text = "Blog"; Link = "#blog"; Route = Blog; Sublinks = [] };
+        { Text = "Home"; Link = "/"; Route = Home; Sublinks = [] };
+        { Text = "About Us"; Link = "/about"; Route = About; Sublinks = [] };
+        { Text = "Contact"; Link = "/contact"; Route = Contact; Sublinks = [] };
+        { Text = "Blog"; Link = "/blog"; Route = Blog; Sublinks = [] };
     ]
-
-let hashToLoc hash =
-    List.filter (fun i -> i.Link.StartsWith(hash)) routes
-    |> List.map (fun i -> i.Route)
-    |> List.tryHead
-    |> Option.defaultValue Home
 
 //why this function
 // let private sameLink a b =

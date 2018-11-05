@@ -16,3 +16,11 @@ type Msg =
 | ChangeTelephone of string
 | TrySubmit
 | SubmitSuccess
+
+let modelDefault =
+    { Name = ""
+      Email = ""
+      Comment = ""
+      Telephone = ""
+      Submitted = false
+      Submitting = false }

@@ -17,9 +17,12 @@
         <Compile Include="View\Contact\Types.fs" />
         <Compile Include="View\Contact\State.fs" />
         <Compile Include="View\Contact\View.fs" />
-        <Compile Include="View\Services.fs" />
-        <Compile Include="View\Blog.fs" />
-        <Compile Include="summit.fs" />
+        <Compile Include="View\Blog\Types.fs" />
+        <Compile Include="View\Blog\State.fs" />
+        <Compile Include="View\Blog\View.fs" />
+        <Compile Include="View\Main\Types.fs" />
+        <Compile Include="View\Main\State.fs" />
+        <Compile Include="View\Main\View.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />

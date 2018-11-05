@@ -2,3 +2,6 @@ group Server
     FSharp.Core
     Saturn
     Fable.JsonConverter
+    Fulma
+    Fable.Elmish.React
+    Fable.Elmish.Browser
