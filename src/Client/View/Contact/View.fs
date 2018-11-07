@@ -4,6 +4,7 @@ open View.Contact.Types
 open Fulma
 open Helpers.Basic
 open Fable.Helpers.React
+open Fable.Helpers.Isomorphic
 
 
 
@@ -101,10 +102,12 @@ let contactForm model dispatch =
                     [ str "Submit"] ] ]
           submitNotification model ]
 
+let constF a _ = a
 // Nice, composite view
 let view (model : Model) (dispatch : Msg -> Unit) =
     div []
         [ hero
           Section.section []
-            [Container.container [Container.IsFluid] [contactForm model dispatch]]
+            [Container.container [Container.IsFluid]
+            [isomorphicView (contactForm model) (constF <| div [] []) dispatch]]
         ]
