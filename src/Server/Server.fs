@@ -36,7 +36,7 @@ let renderPage model =
             ]
        ]
 let defaultState : View.Main.Types.Model =
-    { Route = Route.Home
+    { Route = Route.Contact
       ContactModel = View.Contact.Types.modelDefault
       NavbarModel = { HamburgerOpen = false }
     };
@@ -54,19 +54,19 @@ let webApp = router {
         })
     get "/" (fun next ctx ->
         task {
-            let model = {defaultState with Route = Route.Home}
+            let model = {defaultState with Route = Route.Contact}
             let rendered = renderPage model
             return! (htmlView rendered) next ctx
         })
     get "/about" (fun next ctx ->
         task {
-            let model = {defaultState with Route = Route.About}
+            let model = {defaultState with Route = Route.Contact}
             let rendered = renderPage model
             return! (htmlView rendered) next ctx
         })
     get "/blog" (fun next ctx ->
         task {
-            let model = {defaultState with Route = Route.Blog}
+            let model = {defaultState with Route = Route.Contact}
             let rendered = renderPage model
             return! (htmlView rendered) next ctx
         })

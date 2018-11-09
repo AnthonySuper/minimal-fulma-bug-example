@@ -109,5 +109,5 @@ let view (model : Model) (dispatch : Msg -> Unit) =
         [ hero
           Section.section []
             [Container.container [Container.IsFluid]
-            [isomorphicView (contactForm model) (constF <| div [] []) dispatch]]
+            [contactForm model dispatch]]
         ]

@@ -18,7 +18,7 @@ let urlUpdate (result: Route option) model =
 // The initial state and the initial effectful action.
 // In this case, we don't have any effectful action, and we start on the home page.
 let init r : Model * Cmd<Msg> =
-    let route = Option.defaultValue Home r
+    let route = Option.defaultValue Contact r
     let cm, _ = View.Contact.State.init ()
     let navModel, navCmd = Global.Navbar.init ()
     let initialModel = { NavbarModel = navModel; Route = route; ContactModel = cm }

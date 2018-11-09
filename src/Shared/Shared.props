@@ -6,12 +6,6 @@
     <Compile Include="../Client/Global/Navbar.fs" />
     <Compile Include="../Client/View/Contact/Types.fs" />
     <Compile Include="../Client/View/Contact/View.fs" />
-    <Compile Include="../Client/View/About/Types.fs" />
-    <Compile Include="../Client/View/About/View.fs" />
-    <Compile Include="../Client/View/Blog/Types.fs" />
-    <Compile Include="../Client/View/Blog/View.fs" />
-    <Compile Include="../Client/View/Home/Types.fs" />
-    <Compile Include="../Client/View/Home/View.fs" />
     <Compile Include="../Client/View/Main/Types.fs" />
     <Compile Include="../Client/View/Main/View.fs" />
 

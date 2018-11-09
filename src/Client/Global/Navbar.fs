@@ -39,10 +39,8 @@ type LinkText =
 
 let routes =
     [
-        { Text = "Home"; Link = "/"; Route = Home; Sublinks = [] };
-        { Text = "About Us"; Link = "/about"; Route = About; Sublinks = [] };
         { Text = "Contact"; Link = "/contact"; Route = Contact; Sublinks = [] };
-        { Text = "Blog"; Link = "/blog"; Route = Blog; Sublinks = [] };
+
     ]
 
 //why this function
@@ -96,13 +94,13 @@ let view dispatch model currentRoute =
     let links = (List.map (navLink (dispatch << ChangeRoute) currentRoute true) routes)
     Navbar.navbar []
         [  Navbar.Brand.div
-            //QUESTION from JF: What is force-flex?
+
             [CustomClass "force-flex"]
             [ Navbar.Item.a
                 [ Navbar.Item.Props
                     [ Href "#"
                       lazy (dispatch (ChangeRoute "#")) |> defaultClick] ]
-                [img [Src "Images/summit_logo.png"]] //QUESTION from JF: Why this again?
+                [img [Src "Images/summit_logo.png"]]
               Navbar.burger (burgerOptions dispatch model)
                 [ span [] []
                   span [] []

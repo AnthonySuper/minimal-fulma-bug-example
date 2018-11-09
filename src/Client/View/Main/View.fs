@@ -20,10 +20,8 @@ open Route
 // This is also very boiler-plate-ish but it's not too bad.
 let viewRoute model dispatch =
     match model.Route with
-    | Home -> View.Home.View.view () (dispatch << HomeMsg)
-    | About -> View.About.View.view () (dispatch << AboutMsg)
     | Contact -> View.Contact.View.view model.ContactModel (dispatch << ContactMsg)
-    | Blog -> View.Blog.View.view () (dispatch << BlogMsg)
+
 
 let view (model : Model) (dispatch : Msg -> unit) =
     div [ ClassName "overall-container" ]
